@@ -139,32 +139,12 @@ static NSString *collectionViewCellIdentifier = @"CollectionViewCellIdentifier";
         
         NSInteger contentOffset_x = (NSInteger)ABS(self.selectedIndex * scrollView.frame.size.width - scrollView.contentOffset.x);
         if (scrollView.contentOffset.x < self.selectedIndex * scrollView.frame.size.width) { // ←
-            if (contentOffset_x > scrollView.frame.size.width) {
-                if (contentOffset_x % (NSInteger)scrollView.frame.size.width == 0) {
-                    self.willSelectIndex = self.selectedIndex - contentOffset_x/(NSInteger)scrollView.frame.size.width;
-                }else {
-                    self.willSelectIndex = self.selectedIndex - contentOffset_x/(NSInteger)scrollView.frame.size.width - 1;
-                }
-            }else {
-                self.willSelectIndex = self.selectedIndex - 1;
-            }
-
+            self.willSelectIndex = self.selectedIndex - ceil(contentOffset_x/scrollView.frame.size.width);
         }else { // →
-            if (contentOffset_x > scrollView.frame.size.width) {
-                if (contentOffset_x % (NSInteger)scrollView.frame.size.width == 0) {
-                    self.willSelectIndex = self.selectedIndex + contentOffset_x/(NSInteger)scrollView.frame.size.width;
-                }else {
-                    self.willSelectIndex = self.selectedIndex + contentOffset_x/(NSInteger)scrollView.frame.size.width + 1;
-                }
-            }else {
-                self.willSelectIndex = self.selectedIndex + 1;
-            }
+            self.willSelectIndex = self.selectedIndex + ceil(contentOffset_x/scrollView.frame.size.width);
         }
-        
         NSLog(@"%ld",self.willSelectIndex);
-        
         self.segmentBar.selectedItemContentOffset_x = scrollView.contentOffset.x;
-        
         [NSObject cancelPreviousPerformRequestsWithTarget:self];
         [self performSelector:@selector(scrollViewDidEndScrollingAnimation:) withObject:self.contentCollectionView afterDelay:.1];
     }
